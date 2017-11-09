@@ -108,6 +108,7 @@ class Settings
     }
 
     const SLUG = "epfl_tequila";
+    const OPTION_GROUP = "plugin:epfl-tequila-optiongroup";
 
     public function get_option($name, $default = false, $use_cache = true)
     {
@@ -155,7 +156,7 @@ class Settings
         $data = shortcode_atts($default_values, $option_values);
 
         register_setting(
-            'plugin:epfl-tequila-optiongroup',          // group, used for settings_fields()
+            $this::OPTION_GROUP,                        // group, used for settings_fields()
             $option_name,                               // option name, used as key in database
             array($this, 'validate_settings')           // validation callback
         );
@@ -244,7 +245,7 @@ class Settings
         echo("<div class=\"wrap\">
         <h2>$title</h2>
         <form action=\"options.php\" method=\"POST\">\n");
-        settings_fields( 'plugin:epfl-tequila-optiongroup' );
+        settings_fields( $this::OPTION_GROUP );
         do_settings_sections( $this::SLUG );
         submit_button();
         echo "        </form>\n";
@@ -255,7 +256,7 @@ class Settings
     {
         if (false) {
             add_settings_error(
-                'plugin:epfl-tequila-optiongroup',
+                $this::OPTION_GROUP,
                 'number-too-low',
                 'Number must be between 1 and 1000.'
             );
