@@ -107,6 +107,8 @@ class Settings
         }
     }
 
+    const SLUG = "epfl_tequila";
+
     public function get_option($name, $default = false, $use_cache = true)
     {
         if ($this->is_network_version()) {
@@ -163,28 +165,28 @@ class Settings
             'section_1',                                // ID
             'A propos',                                 // Title
             array($this, 'render_section_about'),       // print output
-            'epfl_tequila'                              // menu slug, see action_admin_menu()
+            $this::SLUG                                 // menu slug, see action_admin_menu()
         );
 
         add_settings_section(
-            'section_2',                                // ID
-            'Aide',                                     // Title
-            array($this, 'render_section_help'),        // print output
-            'epfl_tequila'                              // menu slug, see action_admin_menu()
+            'section_2',
+            'Aide',
+            array($this, 'render_section_help'),
+            $this::SLUG
         );
 
         add_settings_section(
-            'section_3',                                // ID
-            'Paramètres',                               // Title
-            array($this, 'render_section_parameters'),  // print output
-            'epfl_tequila'                              // menu slug, see action_admin_menu()
+            'section_3',
+            'Paramètres',
+            array($this, 'render_section_parameters'),
+            $this::SLUG
         );
 
         add_settings_field(
             'section_3_field_1',                        // ID
             'Faculté',                                  // Title
             array($this, 'render_dropdown'),            // print output
-            'epfl_tequila',                             // menu slug, see action_admin_menu()
+            $this::SLUG,                                // menu slug, see action_admin_menu()
             'section_3',                                // parent section
             array(
                 'label_for'   => 'faculty', // makes the field name clickable,
@@ -205,11 +207,11 @@ class Settings
         );
 
         add_settings_field(
-            'section_3_field_2',                        // ID
-            'Groupes administrateur',                   // Title
-            array($this, 'render_input'),               // print output
-            'epfl_tequila',                             // menu slug, see action_admin_menu()
-            'section_3',                                // parent section
+            'section_3_field_2',
+            'Groupes administrateur',
+            array($this, 'render_input'),
+            $this::SLUG,
+            'section_3',
             array(
                 'label_for'   => 'groups',
                 'name'        => 'groups',
@@ -231,7 +233,7 @@ class Settings
             __('Réglages de Tequila', 'epfl-tequila'),  // $page_title,
             __('Tequila (auth)', 'epfl-tequila'),       // $menu_title,
             'manage_options',                           // $capability,
-            'epfl_tequila',                             // $menu_slug
+            $this::SLUG,                                // $menu_slug
             array($this, 'render')                      // Callback
         );
     }
@@ -244,7 +246,7 @@ class Settings
         <form action="options.php" method="POST">
 <?php
         settings_fields('plugin:epfl-tequila-optiongroup');
-        do_settings_sections('epfl_tequila');
+        do_settings_sections($this::SLUG);
         submit_button();
         ?>
         </form>
