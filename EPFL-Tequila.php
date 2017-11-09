@@ -238,21 +238,18 @@ class Settings
         );
     }
 
-    public function render()
+    function render()
     {
-        ?>
-        <div class="wrap">
-        <h2><?php print $GLOBALS['title']; ?></h2>
-        <form action="options.php" method="POST">
-<?php
-        settings_fields('plugin:epfl-tequila-optiongroup');
-        do_settings_sections($this::SLUG);
+        $title = $GLOBALS['title'];
+        echo("<div class=\"wrap\">
+        <h2>$title</h2>
+        <form action=\"options.php\" method=\"POST\">\n");
+        settings_fields( 'plugin:epfl-tequila-optiongroup' );
+        do_settings_sections( $this::SLUG );
         submit_button();
-        ?>
-        </form>
-        </div>
-<?php
+        echo "        </form>\n";
     }
+
 
     public function validate_settings()
     {
