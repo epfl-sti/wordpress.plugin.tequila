@@ -117,7 +117,7 @@ class Settings extends \EPFL\SettingsBase
     {
         $data = $this->get(array(  // Default values
             'groups'    => 'stiitweb',
-            'faculty'   => 'STI'
+            'school'   => 'STI'
         ));
 
         $this->add_settings_section('section_about', ___('À propos'));
@@ -127,9 +127,9 @@ class Settings extends \EPFL\SettingsBase
         $this->add_settings_field(
             'section_parameters', 'field_school', ___('Faculté'),
             array(
-                'label_for'   => 'faculty', // makes the field name clickable,
-                'name'        => 'faculty', // value for 'name' attribute
-                'value'       => $data['faculty'],
+                'label_for'   => 'school', // makes the field name clickable,
+                'name'        => 'school', // value for 'name' attribute
+                'value'       => $data['school'],
                 'options'     => array(
                     'ENAC'      => 'Architecture, Civil and Environmental Engineering — ENAC',
                     'SB'        => 'Basic Sciences — SB',
