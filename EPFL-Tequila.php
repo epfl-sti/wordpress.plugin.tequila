@@ -15,6 +15,10 @@ if (! defined('ABSPATH')) {
 
 require_once(dirname(__FILE__) . "/tequila_client.php");
 
+function ___($text) {
+    return __($text, "epfl-tequila");
+}
+
 class Controller
 {
     static $instance = false;
@@ -42,7 +46,7 @@ class Controller
     function start_authentication()
     {
         $client = new TequilaClient();
-        $client->SetApplicationName(__('Administration WordPress — ', 'epfl-tequila') . get_bloginfo('name'));
+        $client->SetApplicationName(___('Administration WordPress — ') . get_bloginfo('name'));
         $client->SetWantedAttributes(array( 'name',
                                             'firstname',
                                             'displayname',
@@ -72,7 +76,7 @@ class Controller
             http_response_code(404);
             // TODO: perhaps we can tell the user to fly a kite in a
             // more beautiful way
-            echo __('Cet utilisateur est inconnu', 'epfl-tequila');
+            echo ___('Cet utilisateur est inconnu');
             die();
         }
     }
@@ -231,8 +235,8 @@ class Settings
     function action_admin_menu()
     {
         add_options_page(
-            __('Réglages de Tequila', 'epfl-tequila'),  // $page_title,
-            __('Tequila (auth)', 'epfl-tequila'),       // $menu_title,
+            ___('Réglages de Tequila'),                 // $page_title,
+            ___('Tequila (auth)'),                      // $menu_title,
             'manage_options',                           // $capability,
             $this::SLUG,                                // $menu_slug
             array($this, 'render')                      // Callback
