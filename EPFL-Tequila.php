@@ -17,7 +17,8 @@ require_once(dirname(__FILE__) . "/tequila_client.php");
 require_once(dirname(__FILE__) . "/inc/settings.php");
 
 
-function ___($text) {
+function ___($text)
+{
     return __($text, "epfl-tequila");
 }
 
@@ -34,7 +35,8 @@ class Controller
         return self::$instance;
     }
 
-    public function __construct () {
+    public function __construct ()
+    {
         $this->settings = new Settings();
     }
 
@@ -98,7 +100,8 @@ class Settings extends \EPFL\SettingsBase
 {
     const SLUG = "epfl_tequila";
 
-    function hook() {
+    function hook()
+    {
         parent::hook();
         $this->add_options_page(
             ___('Réglages de Tequila'),                 // $page_title,
