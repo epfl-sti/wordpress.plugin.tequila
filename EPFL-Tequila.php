@@ -165,34 +165,12 @@ class Settings
             array($this, 'validate_settings')           // validation callback
         );
 
-        /* No argument has any relation to the prvious register_setting(). */
-        add_settings_section(
-            'section_1',                                // ID
-            'A propos',                                 // Title
-            array($this, 'render_section_about'),       // print output
-            $this::SLUG                                 // menu slug, see action_admin_menu()
-        );
+        $this->add_settings_section('section_about', ___('À propos'));
+        $this->add_settings_section('section_help', ___('Aide'));
+        $this->add_settings_section('section_parameters', ___('Paramètres'));
 
-        add_settings_section(
-            'section_2',
-            'Aide',
-            array($this, 'render_section_help'),
-            $this::SLUG
-        );
-
-        add_settings_section(
-            'section_3',
-            'Paramètres',
-            array($this, 'render_section_parameters'),
-            $this::SLUG
-        );
-
-        add_settings_field(
-            'section_3_field_1',                        // ID
-            'Faculté',                                  // Title
-            array($this, 'render_dropdown'),            // print output
-            $this::SLUG,                                // menu slug, see action_admin_menu()
-            'section_3',                                // parent section
+        $this->add_settings_field(
+            'section_parameters', 'field_school', ___('Faculté'),
             array(
                 'label_for'   => 'faculty', // makes the field name clickable,
                 'name'        => 'faculty', // value for 'name' attribute
@@ -211,12 +189,8 @@ class Settings
             )
         );
 
-        add_settings_field(
-            'section_3_field_2',
-            'Groupes administrateur',
-            array($this, 'render_input'),
-            $this::SLUG,
-            'section_3',
+        $this->add_settings_field(
+            'section_parameters', 'field_admin_groups', ___('Groupes administrateur'),
             array(
                 'label_for'   => 'groups',
                 'name'        => 'groups',
@@ -255,6 +229,45 @@ class Settings
         echo "        </form>\n";
     }
 
+    /**
+     * Like WordPress' add_settings_section, but more straightforward
+     *
+     * @param $key The section name; recommended: make it start with 'section_'
+     *             The render callback is simply the method named "render_$key"
+     * @param $title The title
+     */
+    function add_settings_section ($key, $title)
+    {
+        add_settings_section(
+            $key,                                       // ID
+            $title,                                     // Title
+            array($this, 'render_' . $key),             // print output
+            $this::SLUG                                 // menu slug, see action_admin_menu()
+        );
+    }
+
+    /**
+     * Like WordPress' add_settings_field, but more straightforward
+     *
+     * @param $parent_section_key The parent section's key (i.e., the value
+     #        that was passed as $key to ->add_settings_section())
+     * @param $key The field name; recommended: make it start with 'field_'
+     *             The render callback is simply the method named "render_$key"
+     * @param $title The title
+     * @param options Passed as the last argument to WordPress'
+     *        add_settings_field()
+     */
+    function add_settings_field ($parent_section_key, $key, $title, $options)
+    {
+        add_settings_field(
+            $key,                                       // ID
+            $title,                                     // Title
+            array($this, 'render_' . $key),             // print output
+            $this::SLUG,                                // menu slug, see action_admin_menu()
+            $parent_section_key,                        // parent section
+            $options
+        );
+    }
 
     function validate_settings()
     {
@@ -290,7 +303,7 @@ class Settings
         // Nothing — The fields in this section speak for themselves
     }
 
-    function render_input($args)
+    function render_field_admin_groups($args)
     {
         /* Creates this markup:
            /* <input name="plugin:option_name[number]"
@@ -307,7 +320,7 @@ class Settings
         }
     }
 
-    function render_dropdown($args)
+    function render_field_school($args)
     {
         printf(
             '<select name="%1$s[%2$s]" id="%3$s">',
