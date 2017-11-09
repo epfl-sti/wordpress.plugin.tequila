@@ -342,18 +342,4 @@ class Settings
             echo '<br />&nbsp;<i>' . $args['help'] . '</i>';
         }
     }
-
-    function render_textarea($args)
-    {
-        printf(
-            '<textarea name="%1$s[%2$s]" id="%3$s" rows="10" cols="30" class="code">%4$s</textarea>',
-            $args['option_name'],
-            $args['name'],
-            $args['label_for'],
-            $args['value']
-        );
-        if ($args['help']) {
-            echo '<br />&nbsp;<i>' . $args['help'] . '</i>';
-        }
-    }
 }
