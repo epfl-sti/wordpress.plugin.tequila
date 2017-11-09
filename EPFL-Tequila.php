@@ -269,7 +269,7 @@ class Settings
         );
     }
 
-    function validate_settings()
+    function validate_settings( $settings )
     {
         if (false) {
             add_settings_error(
@@ -278,6 +278,7 @@ class Settings
                 'Number must be between 1 and 1000.'
             );
         }
+        return $settings;
     }
 
     function render_section_about()
