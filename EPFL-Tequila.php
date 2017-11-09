@@ -17,7 +17,7 @@ require_once(dirname(__FILE__) . "/tequila_client.php");
 
 class Controller
 {
-    public static $instance = false;
+    static $instance = false;
     var $settings = null;
 
     public static function getInstance()
@@ -39,7 +39,7 @@ class Controller
         $this->settings->hook();
     }
 
-    public function start_authentication()
+    function start_authentication()
     {
         $client = new TequilaClient();
         $client->SetApplicationName(__('Administration WordPress — ', 'epfl-tequila') . get_bloginfo('name'));
@@ -54,7 +54,7 @@ class Controller
         $client->Authenticate(admin_url("?back-from-Tequila=1"));
     }
 
-    public function maybe_back_from_tequila()
+    function maybe_back_from_tequila()
     {
         if (! $_REQUEST['back-from-Tequila']) {
             return;
@@ -77,7 +77,7 @@ class Controller
         }
     }
 
-    public function update_user($tequila_data)
+    function update_user($tequila_data)
     {
         // TODO: improve a lot!
         // * Automatically update all supplementary fields (e.g. email addres)
@@ -107,7 +107,7 @@ class Settings
         }
     }
 
-    public function get_option($name, $default = false, $use_cache = true)
+    function get_option($name, $default = false, $use_cache = true)
     {
         if ($this->is_network_version()) {
             return get_site_option($name, $default, $use_cache);
@@ -119,8 +119,8 @@ class Settings
     /**
      * @returns Whether this plugin is currently network activated
      */
-    public $_is_network_version = null;
-    public function is_network_version()
+    var $_is_network_version = null;
+    function is_network_version()
     {
         if ($this->_is_network_version === null) {
             if (! function_exists('is_plugin_active_for_network')) {
@@ -136,7 +136,7 @@ class Settings
     const SLUG = "epfl_tequila";
     const OPTION_GROUP = "plugin:epfl-tequila-optiongroup";
 
-    public function action_admin_init()
+    function action_admin_init()
     {
         // Use the settings API rather than writing our own <form>s and
         // validators therefor.
@@ -228,7 +228,7 @@ class Settings
      *
      * @see https://wordpress.stackexchange.com/questions/100023/settings-api-with-arrays-example
      */
-    public function action_admin_menu()
+    function action_admin_menu()
     {
         add_options_page(
             __('Réglages de Tequila', 'epfl-tequila'),  // $page_title,
@@ -252,7 +252,7 @@ class Settings
     }
 
 
-    public function validate_settings()
+    function validate_settings()
     {
         if (false) {
             add_settings_error(
