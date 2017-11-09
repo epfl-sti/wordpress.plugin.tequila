@@ -107,9 +107,6 @@ class Settings
         }
     }
 
-    const SLUG = "epfl_tequila";
-    const OPTION_GROUP = "plugin:epfl-tequila-optiongroup";
-
     public function get_option($name, $default = false, $use_cache = true)
     {
         if ($this->is_network_version()) {
@@ -135,6 +132,9 @@ class Settings
 
         return $this->_is_network_version;
     }
+
+    const SLUG = "epfl_tequila";
+    const OPTION_GROUP = "plugin:epfl-tequila-optiongroup";
 
     public function action_admin_init()
     {
