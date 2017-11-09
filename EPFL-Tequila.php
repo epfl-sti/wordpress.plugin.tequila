@@ -14,6 +14,8 @@ if (! defined('ABSPATH')) {
 }
 
 require_once(dirname(__FILE__) . "/tequila_client.php");
+require_once(dirname(__FILE__) . "/inc/settings.php");
+
 
 function ___($text) {
     return __($text, "epfl-tequila");
@@ -92,78 +94,28 @@ class Controller
     }
 }
 
-Controller::getInstance()->hook();
-
-class Settings
+class Settings extends \EPFL\SettingsBase
 {
-    function hook()
-    { 
-        add_action('admin_init', array($this, 'action_admin_init'));
-        add_action('admin_menu', array($this, 'action_admin_menu'));
-    }
+    const SLUG = "epfl_tequila";
 
-    public function get($name, $default = false, $use_cache = true)
-    {
-        if ( $this->is_network_version() ) {
-            return get_site_option($name, $default, $use_cache);
-        } else {
-            return get_option($name, $default);
-        }
-    }
-
-    function get_option($name, $default = false, $use_cache = true)
-    {
-        if ($this->is_network_version()) {
-            return get_site_option($name, $default, $use_cache);
-        } else {
-            return get_option($name, $default);
-        }
+    function hook() {
+        parent::hook();
+        $this->add_options_page(
+            ___('Réglages de Tequila'),                 // $page_title,
+            ___('Tequila (auth)'),                      // $menu_title,
+            'manage_options');                          // $capability
+        add_action('admin_init', array($this, 'setup_options_page'));
     }
 
     /**
-     * @returns Whether this plugin is currently network activated
+     * Prepare the admin menu with settings and their values
      */
-    var $_is_network_version = null;
-    function is_network_version()
+    function setup_options_page()
     {
-        if ($this->_is_network_version === null) {
-            if (! function_exists('is_plugin_active_for_network')) {
-                require_once(ABSPATH . '/wp-admin/includes/plugin.php');
-            }
-
-            $this->_is_network_version = (bool) is_plugin_active_for_network(plugin_basename(__FILE__));
-        }
-
-        return $this->_is_network_version;
-    }
-
-    const SLUG = "epfl_tequila";
-    const OPTION_GROUP = "plugin:epfl-tequila-optiongroup";
-
-    function action_admin_init()
-    {
-        // Use the settings API rather than writing our own <form>s and
-        // validators therefor.
-        // More at https://wordpress.stackexchange.com/a/100137
-        $option_name   = 'plugin:epfl-tequila';
-
-        // Fetch existing options.
-        $option_values = $this->get( $option_name );
-
-        $default_values = array(
+        $data = $this->get(array(  // Default values
             'groups'    => 'stiitweb',
-            'faculty'   => 'STI',
-            'long'      => ''
-        );
-
-        // Parse option values into predefined keys, throw the rest away.
-        $data = shortcode_atts($default_values, $option_values);
-
-        register_setting(
-            $this::OPTION_GROUP,                        // group, used for settings_fields()
-            $option_name,                               // option name, used as key in database
-            array($this, 'validate_settings')           // validation callback
-        );
+            'faculty'   => 'STI'
+        ));
 
         $this->add_settings_section('section_about', ___('À propos'));
         $this->add_settings_section('section_help', ___('Aide'));
@@ -174,7 +126,7 @@ class Settings
             array(
                 'label_for'   => 'faculty', // makes the field name clickable,
                 'name'        => 'faculty', // value for 'name' attribute
-                'value'       => esc_attr($data['faculty']),
+                'value'       => $data['faculty'],
                 'options'     => array(
                     'ENAC'      => 'Architecture, Civil and Environmental Engineering — ENAC',
                     'SB'        => 'Basic Sciences — SB',
@@ -184,7 +136,6 @@ class Settings
                     'CDM'       => 'Management of Technology — CDM',
                     'CDH'       => 'College of Humanities — CDH'
                 ),
-                'option_name' => $option_name,
                 'help' => 'Permet de sélectionner les accès par défaut (droit wordpress.faculté).'
             )
         );
@@ -194,88 +145,18 @@ class Settings
             array(
                 'label_for'   => 'groups',
                 'name'        => 'groups',
-                'value'       => esc_attr($data['groups']),
-                'option_name' => $option_name,
+                'value'       => $data['groups'],
                 'help' => 'Groupe permettant l’accès administrateur.'
             )
-        );
-    }
-
-    /**
-     * Spit out every knob previously registered with action_admin_init()
-     *
-     * @see https://wordpress.stackexchange.com/questions/100023/settings-api-with-arrays-example
-     */
-    function action_admin_menu()
-    {
-        add_options_page(
-            ___('Réglages de Tequila'),                 // $page_title,
-            ___('Tequila (auth)'),                      // $menu_title,
-            'manage_options',                           // $capability,
-            $this::SLUG,                                // $menu_slug
-            array($this, 'render')                      // Callback
-        );
-    }
-
-    function render()
-    {
-        $title = $GLOBALS['title'];
-        echo("<div class=\"wrap\">
-        <h2>$title</h2>
-        <form action=\"options.php\" method=\"POST\">\n");
-        settings_fields( $this::OPTION_GROUP );
-        do_settings_sections( $this::SLUG );
-        submit_button();
-        echo "        </form>\n";
-    }
-
-    /**
-     * Like WordPress' add_settings_section, but more straightforward
-     *
-     * @param $key The section name; recommended: make it start with 'section_'
-     *             The render callback is simply the method named "render_$key"
-     * @param $title The title
-     */
-    function add_settings_section ($key, $title)
-    {
-        add_settings_section(
-            $key,                                       // ID
-            $title,                                     // Title
-            array($this, 'render_' . $key),             // print output
-            $this::SLUG                                 // menu slug, see action_admin_menu()
-        );
-    }
-
-    /**
-     * Like WordPress' add_settings_field, but more straightforward
-     *
-     * @param $parent_section_key The parent section's key (i.e., the value
-     #        that was passed as $key to ->add_settings_section())
-     * @param $key The field name; recommended: make it start with 'field_'
-     *             The render callback is simply the method named "render_$key"
-     * @param $title The title
-     * @param options Passed as the last argument to WordPress'
-     *        add_settings_field()
-     */
-    function add_settings_field ($parent_section_key, $key, $title, $options)
-    {
-        add_settings_field(
-            $key,                                       // ID
-            $title,                                     // Title
-            array($this, 'render_' . $key),             // print output
-            $this::SLUG,                                // menu slug, see action_admin_menu()
-            $parent_section_key,                        // parent section
-            $options
         );
     }
 
     function validate_settings( $settings )
     {
         if (false) {
-            add_settings_error(
-                $this::OPTION_GROUP,
+            $this->add_settings_error(
                 'number-too-low',
-                'Number must be between 1 and 1000.'
+                ___('Number must be between 1 and 1000.')
             );
         }
         return $settings;
@@ -344,3 +225,6 @@ class Settings
         }
     }
 }
+
+Controller::getInstance()->hook();
+
