@@ -281,6 +281,11 @@ class Settings
     GitHub</a>.</p>', 'epfl-tequila');
     }
 
+    function render_section_parameters()
+    {
+        // Nothing — The fields in this section speak for themselves
+    }
+
     function render_input($args)
     {
         /* Creates this markup:
