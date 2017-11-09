@@ -283,4 +283,3 @@ function t5_sae_render_section_2_field_1( $args )
 }
 
 TequilaLogin::getInstance()->hook();
-?>
