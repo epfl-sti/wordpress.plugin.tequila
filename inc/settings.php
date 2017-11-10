@@ -32,6 +32,8 @@ if (! defined('ABSPATH')) {
  *
  * @see https://wordpress.stackexchange.com/questions/100023/settings-api-with-arrays-example
  */
+
+if (! class_exists('EPFL\SettingsBase')):
 class SettingsBase {
     public function hook()
     { 
@@ -222,3 +224,4 @@ class SettingsBase {
         );
     }
 }
+endif;
