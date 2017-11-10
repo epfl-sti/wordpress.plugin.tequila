@@ -47,7 +47,7 @@ class SettingsBase {
     public function get()
     {
         if ( $this->is_network_version() ) {
-            return get_site_option( $this->option_name() );
+            return get_site_option( $this->network_option_name() );
         } else {
             return get_option( $this->option_name() );
         }
@@ -117,6 +117,11 @@ class SettingsBase {
     function option_name()
     {
         return "plugin:" . $this::SLUG;
+    }
+
+    function network_option_name()
+    {
+        return "plugin:" . $this::SLUG . ":network";
     }
 
     function option_group()
