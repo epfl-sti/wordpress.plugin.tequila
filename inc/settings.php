@@ -41,15 +41,29 @@ class SettingsBase {
 
     /************************ Data concerns ***********************/
 
-    public function get($default_values = array())
+    /**
+     * @return The current settings as an associative array
+     */
+    public function get()
     {
         if ( $this->is_network_version() ) {
-            $values = get_site_option( $this->option_name() );
+            return get_site_option( $this->option_name() );
         } else {
-            $values = get_option( $this->option_name() );
+            return get_option( $this->option_name() );
         }
-        // Parse option values into predefined keys, throw the rest away.
-        return shortcode_atts($default_values, $values);
+    }
+
+    /**
+     * Like get(), except merge / guard with $defaults
+     *
+     * Keys that exist in $default_values, but are missing in ->get()
+     * are replaced with their value in $default_values. Conversely,
+     * keys that exist in ->get(), but don't exist in $default_values
+     * are discarded.
+     */
+    public function get_with_defaults ($default_values)
+    {
+        return shortcode_atts($default_values, $this->get());
     }
 
     function get_option($name, $default = false, $use_cache = true)

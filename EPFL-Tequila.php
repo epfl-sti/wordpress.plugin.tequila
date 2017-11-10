@@ -2,7 +2,7 @@
 /*
  * Plugin Name: EPFL Tequila
  * Description: Authenticate with Tequila in the admin page
- * Version:     0.1
+ * Version:     0.0.3
  * Author:      Dominique Quatravaux
  * Author URI:  mailto:dominique.quatravaux@epfl.ch
  */
@@ -115,7 +115,7 @@ class Settings extends \EPFL\SettingsBase
      */
     function setup_options_page()
     {
-        $data = $this->get(array(  // Default values
+        $data = $this->get_with_defaults(array(  // Default values
             'groups'    => 'stiitweb',
             'school'   => 'STI'
         ));
