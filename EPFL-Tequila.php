@@ -1,8 +1,8 @@
 <?php
 /*
  * Plugin Name: EPFL Tequila
- * Description: Authenticate with Tequila in the admin page
- * Version:     0.0.3
+ * Description: Authenticate to WordPress with Tequila
+ * Version:     0.1
  * Author:      Dominique Quatravaux
  * Author URI:  mailto:dominique.quatravaux@epfl.ch
  */
