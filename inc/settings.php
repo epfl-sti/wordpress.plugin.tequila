@@ -114,6 +114,47 @@ class SettingsBase {
         echo "        </form>\n";
     }
 
+    /**
+     * Create markup like:
+     * <input type="text" name="plugin:option_name[number]>"
+     */
+    function render_default_field_text ($args)
+    {
+        printf(
+            '<input type="text" name="%1$s[%2$s]" id="%3$s" value="%4$s" class="regular-text">',
+            $args['option_name'],
+            $args['name'],
+            $args['label_for'],
+            $args['value']
+        );
+        if ($args['help']) {
+            echo '<br />&nbsp;<i>' . $args['help'] . '</i>';
+        }
+    }
+
+    function render_default_field_select ($args)
+    {
+        printf(
+            '<select name="%1$s[%2$s]" id="%3$s">',
+            $args['option_name'],
+            $args['name'],
+            $args['label_for']
+        );
+
+        foreach ($args['options'] as $val => $title) {
+            printf(
+                '<option value="%1$s" %2$s>%3$s</option>',
+                $val,
+                selected($val, $args['value'], false),
+                $title
+            );
+        }
+        print '</select>';
+        if ($args['help']) {
+            echo '<br />&nbsp;<i>' . $args['help'] . '</i>';
+        }
+    }
+
     /*************** "Teach WP OO" concerns **********************/
 
     function option_name()
@@ -175,12 +216,14 @@ class SettingsBase {
      *
      * @param $parent_section_key The parent section's key (i.e., the value
      #        that was passed as $key to ->add_settings_section())
-     * @param $key The field name; recommended: make it start with 'field_'
-     *             The render callback is simply the method named "render_$key"
+     * @param $key The field name. Recommended: make it start with 'field_'
      * @param $title The title
      * @param options Like the last argument to WordPress'
      *        add_settings_field(), except 'value' need not be escaped and
      *        'option_name' will be automatically provided
+     *
+     * The render callback is the method named "render_$key", if it exists,
+     * or "render_default_field_$options['type']"
      */
     function add_settings_field ($parent_section_key, $key, $title, $options)
     {
@@ -190,10 +233,17 @@ class SettingsBase {
         if (! array_key_exists('option_name', $options)) {
             $options['option_name'] = $this->option_name();
         }
+
+        if (array_key_exists('type', $options) &&
+            !method_exists($this, "render_$key")) {
+            $render_method = "render_default_field_" . $options["type"];
+        } else {
+            $render_method = "render_$key";
+        }
         add_settings_field(
             $key,                                       // ID
             $title,                                     // Title
-            array($this, 'render_' . $key),             // print output
+            array($this, $render_method),               // print output
             $this::SLUG,                                // menu slug, see action_admin_menu()
             $parent_section_key,                        // parent section
             $options
