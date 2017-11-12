@@ -54,6 +54,7 @@ class Controller
             add_action('login_init', array( $this, 'redirect_tequila_if_button_clicked' ));
         } else {
             add_action('wp_authenticate', array( $this, 'do_redirect_tequila'));
+            add_action('wp_logout', array( $this, 'logout_to_home_page' ));
         }
     }
 
@@ -76,6 +77,27 @@ class Controller
                                             'title', 'title-en',
                                             'uniqueid'));
         $client->Authenticate(admin_url("?back-from-Tequila=1"));
+    }
+
+    /**
+     * Log out to the site's home page.
+     *
+     * Called as the wp_logout action in case "dual auth" is disabled.
+     *
+     * Logging out to /wp-admin, as is the default behavior of
+     * WordPress, would redirect to Tequila again and just log us
+     * right back in (as per the "fast track" mode of Tequila, which
+     * gave us a cookie and a logged-in state of its own).
+     *
+     * We don't want to fix that by logging out of Tequila as a whole;
+     * rather, in this situation, navigate to the site's home page.
+     * Administrators must somehow browse /wp-admin again on their own
+     * to log back in.
+     */
+    function logout_to_home_page ()
+    {
+        header('Location: ' . home_url());
+        exit;
     }
 
     function render_tequila_login_button() {
