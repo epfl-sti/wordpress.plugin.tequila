@@ -70,6 +70,7 @@ class Controller
         $client->SetApplicationName(sprintf(___('Administration WordPress — %1$s'), get_bloginfo('name')));
         $client->SetWantedAttributes(array( 'name',
                                             'firstname',
+                                            'group',
                                             'displayname',
                                             'username',
                                             'personaltitle',
