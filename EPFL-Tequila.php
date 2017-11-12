@@ -116,53 +116,27 @@ class Settings extends \EPFL\SettingsBase
     function setup_options_page()
     {
         $data = $this->get_with_defaults(array(
-            'groups'    => 'stiitweb',
-            'school'   => 'STI'
+            'has_dual_auth'    => 'true'
         ));
 
         $this->add_settings_section('section_about', ___('À propos'));
         $this->add_settings_section('section_help', ___('Aide'));
-
-        $this->add_settings_field(
-            'section_parameters', 'field_school', ___('Faculté'),
-            array(
-                'label_for'   => 'school', // makes the field name clickable,
-                'name'        => 'school', // value for 'name' attribute
-                'value'       => $data['school'],
-                'options'     => array(
-                    'ENAC'      => 'Architecture, Civil and Environmental Engineering — ENAC',
-                    'SB'        => 'Basic Sciences — SB',
-                    'STI'       => 'Engineering — STI',
-                    'IC'        => 'Computer and Communication Sciences — IC',
-                    'SV'        => 'Life Sciences — SV',
-                    'CDM'       => 'Management of Technology — CDM',
-                    'CDH'       => 'College of Humanities — CDH'
-                ),
-                'help' => 'Permet de sélectionner les accès par défaut (droit wordpress.faculté).'
-            )
-        );
-
-        $this->add_settings_field(
-            'section_parameters', 'field_admin_groups', ___('Groupes administrateur'),
-            array(
-                'label_for'   => 'groups',
-                'name'        => 'groups',
-                'value'       => $data['groups'],
-                'help' => 'Groupe permettant l’accès administrateur.'
-            )
-        );
-    }
-
-    function validate_settings( $settings )
-    {
-        if (false) {
-            $this->add_settings_error(
-                'number-too-low',
-                ___('Number must be between 1 and 1000.')
-            );
-        }
-        return $settings;
         $this->add_settings_section('section_settings', ___('Réglages'));
+
+        $this->add_settings_field(
+            'section_settings', 'field_dual_auth', ___('Authentification traditionnelle Wordpress'),
+            array(
+                'type'        => 'radio',
+                'label_for'   => 'has_dual_auth', // makes the field name clickable,
+                'name'        => 'has_dual_auth', // value for 'name' attribute
+                'value'       => $data['has_dual_auth'],
+                'options'     => array(
+                    'true'       => ___('Activée'),
+                    'false'      => ___('Désactivée')
+                ),
+                'help' => ___('Le réglage «Activée» permet d\'utiliser simultanément Tequila et l\'authentification par nom / mot de passe livrée avec WordPress')
+            )
+        );
     }
 
     function render_section_about()
@@ -186,46 +160,6 @@ class Settings extends \EPFL\SettingsBase
     function render_section_settings()
     {
         // Nothing — The fields in this section speak for themselves
-    }
-
-    function render_field_admin_groups($args)
-    {
-        /* Creates this markup:
-           /* <input name="plugin:option_name[number]"
-        */
-        printf(
-            '<input name="%1$s[%2$s]" id="%3$s" value="%4$s" class="regular-text">',
-            $args['option_name'],
-            $args['name'],
-            $args['label_for'],
-            $args['value']
-        );
-        if ($args['help']) {
-            echo '<br />&nbsp;<i>' . $args['help'] . '</i>';
-        }
-    }
-
-    function render_field_school($args)
-    {
-        printf(
-            '<select name="%1$s[%2$s]" id="%3$s">',
-            $args['option_name'],
-            $args['name'],
-            $args['label_for']
-        );
-
-        foreach ($args['options'] as $val => $title) {
-            printf(
-                '<option value="%1$s" %2$s>%3$s</option>',
-                $val,
-                selected($val, $args['value'], false),
-                $title
-            );
-        }
-        print '</select>';
-        if ($args['help']) {
-            echo '<br />&nbsp;<i>' . $args['help'] . '</i>';
-        }
     }
 }
 
