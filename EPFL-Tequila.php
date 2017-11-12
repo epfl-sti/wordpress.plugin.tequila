@@ -13,7 +13,7 @@ if (! defined('ABSPATH')) {
     die('Access denied.');
 }
 
-require_once(dirname(__FILE__) . "/tequila_client.php");
+require_once(dirname(__FILE__) . "/inc/tequila_client.php");
 require_once(dirname(__FILE__) . "/inc/settings.php");
 
 
@@ -49,7 +49,7 @@ class Controller
 
     function start_authentication()
     {
-        $client = new TequilaClient();
+        $client = new \TequilaClient();
         $client->SetApplicationName(___('Administration WordPress — ') . get_bloginfo('name'));
         $client->SetWantedAttributes(array( 'name',
                                             'firstname',
@@ -69,7 +69,7 @@ class Controller
         }
 
         error_log("Back from Tequila with ". $_SERVER['QUERY_STRING'] . " !!");
-        $client = new TequilaClient();
+        $client = new \TequilaClient();
         $tequila_data = $client->fetchAttributes($_GET["key"]);
         $user = $this->update_user($tequila_data);
         if ($user) {

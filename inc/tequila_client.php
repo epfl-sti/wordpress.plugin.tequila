@@ -1,5 +1,9 @@
 <?php
 
+if (! defined('ABSPATH')) {
+    die('Access denied.');
+}
+
 define('LNG_DEUTSCH', 2);
 define('LNG_ENGLISH', 1);
 define('LNG_FRENCH', 0);
