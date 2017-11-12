@@ -122,7 +122,6 @@ class Settings extends \EPFL\SettingsBase
 
         $this->add_settings_section('section_about', ___('À propos'));
         $this->add_settings_section('section_help', ___('Aide'));
-        $this->add_settings_section('section_parameters', ___('Paramètres'));
 
         $this->add_settings_field(
             'section_parameters', 'field_school', ___('Faculté'),
@@ -163,6 +162,7 @@ class Settings extends \EPFL\SettingsBase
             );
         }
         return $settings;
+        $this->add_settings_section('section_settings', ___('Réglages'));
     }
 
     function render_section_about()
@@ -183,7 +183,7 @@ class Settings extends \EPFL\SettingsBase
     GitHub</a>.</p>', 'epfl-tequila');
     }
 
-    function render_section_parameters()
+    function render_section_settings()
     {
         // Nothing — The fields in this section speak for themselves
     }
