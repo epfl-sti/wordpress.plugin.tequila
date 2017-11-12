@@ -43,11 +43,27 @@ class Controller
     public function hook()
     {
         add_action('init', array($this, 'maybe_back_from_tequila'));
-        add_action('wp_authenticate', array( $this, 'start_authentication' ));
+        add_action('init', array($this, 'setup_tequila_auth'));
         $this->settings->hook();
     }
 
-    function start_authentication()
+    function setup_tequila_auth()
+    {
+        if ("true" == $this->settings->get()["has_dual_auth"]) {
+            add_action('login_form', array($this, 'render_tequila_login_button'));
+            add_action('login_init', array( $this, 'redirect_tequila_if_button_clicked' ));
+        } else {
+            add_action('wp_authenticate', array( $this, 'do_redirect_tequila'));
+        }
+    }
+
+    function redirect_tequila_if_button_clicked() {
+        if ($_REQUEST['redirect-tequila']) {
+            $this->do_redirect_tequila();
+        }
+    }
+
+    function do_redirect_tequila()
     {
         $client = new \TequilaClient();
         $client->SetApplicationName(___('Administration WordPress — ') . get_bloginfo('name'));
@@ -60,6 +76,16 @@ class Controller
                                             'title', 'title-en',
                                             'uniqueid'));
         $client->Authenticate(admin_url("?back-from-Tequila=1"));
+    }
+
+    function render_tequila_login_button() {
+        ?>
+        <p>
+        <label for="login_tequila">
+        <a href="?redirect-tequila=1" class="button button-primary button-large" style="background-color:darkred;"><?php echo ___("Se connecter avec Tequila...") ?></a>
+        </label>
+        </p>
+        <?php
     }
 
     function maybe_back_from_tequila()
