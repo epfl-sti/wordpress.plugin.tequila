@@ -155,6 +155,24 @@ class SettingsBase {
         }
     }
 
+    function render_default_field_radio ($args)
+    {
+        foreach ($args['options'] as $val => $title) {
+            printf(
+                '<input type="radio" type="radio" name="%1$s[%2$s]" value="%3$s" %4$s/>%5$s</p>',
+                $args['option_name'],
+                $args['name'],
+                $val,
+                checked($val, $args['value'], false),
+                $title
+            );
+        }
+        print '</select>';
+        if ($args['help']) {
+            echo '<br />&nbsp;<i>' . $args['help'] . '</i>';
+        }
+    }
+
     /*************** "Teach WP OO" concerns **********************/
 
     function option_name()
