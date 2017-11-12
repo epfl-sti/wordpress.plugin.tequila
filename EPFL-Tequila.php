@@ -59,7 +59,7 @@ class Controller
     }
 
     function redirect_tequila_if_button_clicked() {
-        if ($_REQUEST['redirect-tequila']) {
+        if (array_key_exists('redirect-tequila', $_REQUEST)) {
             $this->do_redirect_tequila();
         }
     }
@@ -112,7 +112,7 @@ class Controller
 
     function maybe_back_from_tequila()
     {
-        if (! $_REQUEST['back-from-Tequila']) {
+        if (!array_key_exists('back-from-Tequila', $_REQUEST)) {
             return;
         }
 
