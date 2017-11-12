@@ -66,7 +66,7 @@ class Controller
     function do_redirect_tequila()
     {
         $client = new \TequilaClient();
-        $client->SetApplicationName(___('Administration WordPress — ') . get_bloginfo('name'));
+        $client->SetApplicationName(sprintf(___('Administration WordPress — %1$s'), get_bloginfo('name')));
         $client->SetWantedAttributes(array( 'name',
                                             'firstname',
                                             'displayname',
