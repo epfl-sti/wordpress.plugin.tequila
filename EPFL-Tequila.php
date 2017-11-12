@@ -115,7 +115,7 @@ class Settings extends \EPFL\SettingsBase
      */
     function setup_options_page()
     {
-        $data = $this->get_with_defaults(array(  // Default values
+        $data = $this->get_with_defaults(array(
             'groups'    => 'stiitweb',
             'school'   => 'STI'
         ));
