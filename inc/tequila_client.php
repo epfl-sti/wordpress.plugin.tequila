@@ -82,6 +82,7 @@ class TequilaClient
 
         /* Asking tequila */
         $response = $this->askTequila('createrequest', $requestInfos);
+
         return substr(trim($response), 4); // 4 = strlen ('key=')
     }
     public function getAuthenticationUrl($request_key)
@@ -172,8 +173,9 @@ class TequilaClient
         }
         $response = curl_exec($ch);
         // If connexion failed (HTTP code 200 <=> OK)
-        if (curl_getinfo($ch, CURLINFO_HTTP_CODE) != '200') {
-            $response = false;
+        $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        if ($code != '200') {
+            die("Error communicating with Tequila, status is $code");
         }
         curl_close($ch);
         return $response;
