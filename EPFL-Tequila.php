@@ -200,6 +200,7 @@ class TequilaLogin
         $client->SetApplicationName(__('Administration WordPress — ', 'epfl-tequila') . get_bloginfo('name'));
         $client->SetWantedAttributes(array( 'name',
                                             'firstname',
+											'group',    // <= Nécessaire pour authentification par groupe
                                             'displayname',
                                             'username',
                                             'personaltitle',
@@ -211,7 +212,7 @@ class TequilaLogin
 
     public function maybe_back_from_tequila()
     {
-        if (! $_REQUEST['back-from-Tequila']) {
+        if (!array_key_exists('back-from-Tequila', $_REQUEST)) {
             return;
         }
 
@@ -239,7 +240,91 @@ class TequilaLogin
         //   from the authoritative Tequila response
         // * Depending on some policy setting, maybe auto-update user
         //   privileges
-        return get_user_by("login", $tequila_data["username"]);
+		
+		
+		/* !!! Si les options Tequila ne sont pas encore dans la DB, décommenter ces 2 fonctions pour qu'elles y soient ajoutées. 
+		Ensuite, recommenter */
+		
+		/*$ROLE_TO_GROUPS = array('administrator' => 'wp-admin-lc',
+                                 'editor'        => 'wp-editor-lc',
+                                 'author'        => 'wp-author-lc',
+                                 'contributor'   => 'wp-contributor-lc',
+                                 'subscriber'    => 'wp-subscriber-lc');
+		add_option('EPFLTequila_groups', $ROLE_TO_GROUPS, "", "yes");*/
+		
+		
+		if( ($ROLE_TO_GROUPS = get_option('EPFLTequila_groups', null))===null)
+		{
+			echo __("Aucun droit d'accès défini dans la DB");
+			die();
+		}
+		
+		$user_groups = explode(",", $tequila_data['group']);
+		
+		$user_role = null;
+		
+		foreach($ROLE_TO_GROUPS as $role => $role_group)
+		{
+			if(in_array($role_group, $user_groups))
+			{
+				$user_role = $role;
+				break;
+			}
+		}
+		
+		if($user_role === null)
+		{
+			echo __("Accès refusé");
+			die();
+		}
+		
+		/* Remplissage des informations minimum pour l'utilisateur à ajouter */
+		$userdata = array( 'user_nicename'  => $tequila_data['uniqueid'], // => c'est en fait le 'slug' de l'utilisateur
+							'nickname'   	=> $tequila_data['uniqueid'],
+							'user_email' 	=> $tequila_data['email'],
+							'user_login' 	=> $tequila_data['username'],
+							'first_name' 	=> $tequila_data['firstname'],
+							'last_name'  	=> $tequila_data['name'],
+							'role'      	=> $user_role,
+							'user_pass' 	=> null);
+		
+		/* Si user n'existe pas dans WordPress, */
+		if( ($user = get_user_by("slug", $tequila_data["uniqueid"]))===false)
+		{
+			 
+			 /* Ajout de l'utilisateur */                            
+			 $new_user_id = wp_insert_user($userdata);
+
+			if ( ! is_wp_error( $new_user_id ) ) 
+			{
+				$user = new WP_User($new_user_id);
+			}
+			else
+			{	
+				echo $new_user_id->get_error_message();
+				die();
+			}
+			 /* Pour masquer la barre en haut après que l'utilisateur se soit connecté */
+			 update_user_meta( $new_user_id, 'show_admin_bar_front', false );    		
+		
+		}
+		else /* L'utilisateur existe dans WordPress*/
+		{
+			/* Pour dire quel utilisateur on veut mettre à jour */
+			$userdata['ID'] = $user->ID;
+			
+			/* Mise à jour des données de l'utilisateur */
+			$user_id = wp_update_user($userdata);
+			
+			/* Check des erreur */
+			if(is_wp_error($user_id))
+			{
+				echo $user_id->get_error_message();
+				die();
+			}
+			
+		}
+		return $user;
     }
 }
 
