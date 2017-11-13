@@ -1,0 +1,106 @@
+# Copyright (C) 2017 EPFL Tequila
+# This file is distributed under the same license as the EPFL Tequila package.
+msgid ""
+msgstr ""
+"Project-Id-Version: EPFL Tequila 0.3\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/epfl-tequila\n"
+"POT-Creation-Date: 2017-11-13 21:26:39+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2017-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+
+#: EPFL-Tequila.php:72
+msgid "Administration WordPress — %1$s"
+msgstr ""
+
+#: EPFL-Tequila.php:111
+msgid "Se connecter avec Tequila..."
+msgstr ""
+
+#: EPFL-Tequila.php:134
+msgid "Cet utilisateur est inconnu"
+msgstr ""
+
+#: EPFL-Tequila.php:172
+msgid "Réglages de Tequila"
+msgstr ""
+
+#: EPFL-Tequila.php:173
+msgid "Tequila (auth)"
+msgstr ""
+
+#: EPFL-Tequila.php:183
+msgid "À propos"
+msgstr ""
+
+#: EPFL-Tequila.php:184
+msgid "Aide"
+msgstr ""
+
+#: EPFL-Tequila.php:185
+msgid "Réglages"
+msgstr ""
+
+#: EPFL-Tequila.php:192
+msgid "Authentification traditionnelle Wordpress"
+msgstr ""
+
+#: EPFL-Tequila.php:196
+msgid "Activée"
+msgstr ""
+
+#: EPFL-Tequila.php:197
+msgid "Désactivée"
+msgstr ""
+
+#: EPFL-Tequila.php:199
+msgid ""
+"Le réglage «Activée» permet d'utiliser simultanément Tequila et "
+"l'authentification par nom / mot de passe livrée avec WordPress"
+msgstr ""
+
+#: EPFL-Tequila.php:206
+msgid ""
+"<p><a href=\"https://github.com/epfl-sti/wordpress.plugin.tequila\">EPFL-"
+"tequila</a>\n"
+"    permet l’utilisation de <a href=\"https://tequila.epfl.ch/\">Tequila</"
+"a>\n"
+"    (Tequila est un système fédéré de gestion d’identité. Il fournit les "
+"moyens\n"
+"    d’authentifier des personnes dans un réseau d’organisations) avec\n"
+"    WordPress.</p>"
+msgstr ""
+
+#: EPFL-Tequila.php:215
+msgid ""
+"<p>En cas de problème avec EPFL-tequila veuillez créer une\n"
+"    <a href=\"https://github.com/epfl-sti/wordpress.plugin.tequila/issues/new"
+"\"\n"
+"    target=\"_blank\">issue</a> sur le dépôt\n"
+"    <a href=\"https://github.com/epfl-sti/wordpress.plugin.tequila/issues"
+"\">\n"
+"    GitHub</a>.</p>"
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "EPFL Tequila"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "https://github.com/epfl-sti/wordpress.plugin.tequila"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid "Autentification WordPress avec Tequila"
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "Dominique Quatravaux"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "mailto:dominique.quatravaux@epfl.ch"
+msgstr ""

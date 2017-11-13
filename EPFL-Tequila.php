@@ -1,10 +1,12 @@
 <?php
 /*
  * Plugin Name: EPFL Tequila
- * Description: Authenticate to WordPress with Tequila
+ * Plugin URI:  https://github.com/epfl-sti/wordpress.plugin.tequila
+ * Description: Autentification WordPress avec Tequila
  * Version:     0.3
  * Author:      Dominique Quatravaux
  * Author URI:  mailto:dominique.quatravaux@epfl.ch
+ * Text Domain: epfl-tequila
  */
 
 namespace EPFL\Tequila;
@@ -15,7 +17,6 @@ if (! defined('ABSPATH')) {
 
 require_once(dirname(__FILE__) . "/inc/tequila_client.php");
 require_once(dirname(__FILE__) . "/inc/settings.php");
-
 
 function ___($text)
 {
@@ -44,7 +45,13 @@ class Controller
     {
         add_action('init', array($this, 'maybe_back_from_tequila'));
         add_action('init', array($this, 'setup_tequila_auth'));
+        add_action('plugins_loaded', array($this, 'epfl_tequila_load_textdomain'));
+
         $this->settings->hook();
+    }
+
+    function epfl_tequila_load_textdomain() {
+    	load_plugin_textdomain( 'epfl-tequila', false, dirname( plugin_basename(__FILE__) ) . '/languages/' );
     }
 
     function setup_tequila_auth()
@@ -202,6 +209,7 @@ class Settings extends \EPFL\SettingsBase
     function render_section_about()
     {
         echo __('<p><a href="https://github.com/epfl-sti/wordpress.plugin.tequila">EPFL-tequila</a>
+        echo ___('<p><a href="https://github.com/epfl-sti/wordpress.plugin.tequila">EPFL-tequila</a>
     permet l’utilisation de <a href="https://tequila.epfl.ch/">Tequila</a>
     (Tequila est un système fédéré de gestion d’identité. Il fournit les moyens
     d’authentifier des personnes dans un réseau d’organisations) avec
@@ -211,6 +219,7 @@ class Settings extends \EPFL\SettingsBase
     function render_section_help()
     {
         echo __('<p>En cas de problème avec EPFL-tequila veuillez créer une
+        echo ___('<p>En cas de problème avec EPFL-tequila veuillez créer une
     <a href="https://github.com/epfl-sti/wordpress.plugin.tequila/issues/new"
     target="_blank">issue</a> sur le dépôt
     <a href="https://github.com/epfl-sti/wordpress.plugin.tequila/issues">
@@ -224,4 +233,3 @@ class Settings extends \EPFL\SettingsBase
 }
 
 Controller::getInstance()->hook();
-
