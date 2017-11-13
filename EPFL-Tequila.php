@@ -120,7 +120,7 @@ class Controller
         error_log("Back from Tequila with ". $_SERVER['QUERY_STRING'] . " !!");
         $client = new \TequilaClient();
         $tequila_data = $client->fetchAttributes($_GET["key"]);
-        $user = $this->update_user($tequila_data);
+        $user = $this->fetch_user($tequila_data);
         if ($user) {
             wp_set_auth_cookie($user->ID, true);
             wp_redirect(admin_url());
@@ -134,14 +134,28 @@ class Controller
         }
     }
 
-    function update_user($tequila_data)
+    function fetch_user($tequila_data)
     {
-        // TODO: improve a lot!
-        // * Automatically update all supplementary fields (e.g. email addres)
-        //   from the authoritative Tequila response
-        // * Depending on some policy setting, maybe auto-update user
-        //   privileges
-        return get_user_by("login", $tequila_data["username"]);
+        /**
+         * Create or update this Tequila user in the WordPress database.
+         *
+         * Called by EPFL Tequila upon a successful login.
+         *
+         * IF EPFL Tequila is used alone, this hook is not in use and
+         * only users that already exist in the database can log in
+         * (with whatever privilege level they already have). Plug-ins
+         * such as EPFL Accred may define a custom action to create
+         * new users in the database, and set up or update their
+         * personal information and access rights.
+         *
+         * @param array $tequila_data The data received from Tequila
+         */
+        do_action("tequila_save_user", $tequila_data);
+        $user = get_user_by("login", $tequila_data["username"]);
+        if (gettype($user) === "boolean" && $user === false) {
+            $user = null;
+        }
+        return $user;
     }
 }
 
