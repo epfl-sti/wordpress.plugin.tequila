@@ -49,7 +49,7 @@ class Controller
 
     function setup_tequila_auth()
     {
-        if ("true" == $this->settings->get()["has_dual_auth"]) {
+        if ("1" == $this->settings->get("has_dual_auth")) {
             add_action('login_form', array($this, 'render_tequila_login_button'));
             add_action('login_init', array( $this, 'redirect_tequila_if_button_clicked' ));
         } else {
@@ -179,24 +179,21 @@ class Settings extends \EPFL\SettingsBase
      */
     function setup_options_page()
     {
-        $data = $this->get_with_defaults(array(
-            'has_dual_auth'    => 'true'
-        ));
-
         $this->add_settings_section('section_about', ___('À propos'));
         $this->add_settings_section('section_help', ___('Aide'));
         $this->add_settings_section('section_settings', ___('Réglages'));
 
+        $this->register_setting('has_dual_auth', array(
+            'type'    => 'boolean',
+            'default' => true
+        ));
         $this->add_settings_field(
-            'section_settings', 'field_dual_auth', ___('Authentification traditionnelle Wordpress'),
+            'section_settings', 'has_dual_auth', ___('Authentification traditionnelle Wordpress'),
             array(
                 'type'        => 'radio',
-                'label_for'   => 'has_dual_auth', // makes the field name clickable,
-                'name'        => 'has_dual_auth', // value for 'name' attribute
-                'value'       => $data['has_dual_auth'],
                 'options'     => array(
-                    'true'       => ___('Activée'),
-                    'false'      => ___('Désactivée')
+                    '1'           => ___('Activée'),
+                    '0'           => ___('Désactivée')
                 ),
                 'help' => ___('Le réglage «Activée» permet d\'utiliser simultanément Tequila et l\'authentification par nom / mot de passe livrée avec WordPress')
             )

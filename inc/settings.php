@@ -37,43 +37,21 @@ if (! class_exists('EPFL\SettingsBase')):
 class SettingsBase {
     public function hook()
     { 
-        add_action('admin_init', array($this, 'register_setting'));
     }
 
 
     /************************ Data concerns ***********************/
 
     /**
-     * @return The current settings as an associative array
+     * @return The current setting for $key
      */
-    public function get()
+    public function get ($key)
     {
+        $optname = $this->option_name($key);
         if ( $this->is_network_version() ) {
-            return get_site_option( $this->network_option_name() );
+            return get_site_option( $optname );
         } else {
-            return get_option( $this->option_name() );
-        }
-    }
-
-    /**
-     * Like get(), except merge / guard with $defaults
-     *
-     * Keys that exist in $default_values, but are missing in ->get()
-     * are replaced with their value in $default_values. Conversely,
-     * keys that exist in ->get(), but don't exist in $default_values
-     * are discarded.
-     */
-    public function get_with_defaults ($default_values)
-    {
-        return shortcode_atts($default_values, $this->get());
-    }
-
-    function get_option($name, $default = false, $use_cache = true)
-    {
-        if ($this->is_network_version()) {
-            return get_site_option($name, $default, $use_cache);
-        } else {
-            return get_option($name, $default);
+            return get_option( $optname );
         }
     }
 
@@ -114,17 +92,12 @@ class SettingsBase {
         echo "        </form>\n";
     }
 
-    /**
-     * Create markup like:
-     * <input type="text" name="plugin:option_name[number]>"
-     */
     function render_default_field_text ($args)
     {
         printf(
-            '<input type="text" name="%1$s[%2$s]" id="%3$s" value="%4$s" class="regular-text">',
-            $args['option_name'],
-            $args['name'],
-            $args['label_for'],
+            '<input type="text" name="%1$s" id="%2$s" value="%3$s" class="regular-text">',
+            $this->option_name($args['key']),
+            $args['key'],
             $args['value']
         );
         if ($args['help']) {
@@ -135,10 +108,9 @@ class SettingsBase {
     function render_default_field_select ($args)
     {
         printf(
-            '<select name="%1$s[%2$s]" id="%3$s">',
-            $args['option_name'],
-            $args['name'],
-            $args['label_for']
+            '<select name="%1$s" id="%2$s">',
+            $this->option_name($args['key']),
+            $args['key']
         );
 
         foreach ($args['options'] as $val => $title) {
@@ -159,9 +131,8 @@ class SettingsBase {
     {
         foreach ($args['options'] as $val => $title) {
             printf(
-                '<input type="radio" type="radio" name="%1$s[%2$s]" value="%3$s" %4$s/>%5$s</p>',
-                $args['option_name'],
-                $args['name'],
+                '<input type="radio" type="radio" name="%1$s" value="%2$s" %3$s/>%4$s</p>',
+                $this->option_name($args['key']),
                 $val,
                 checked($val, $args['value'], false),
                 $title
@@ -175,14 +146,13 @@ class SettingsBase {
 
     /*************** "Teach WP OO" concerns **********************/
 
-    function option_name()
+    function option_name ($key)
     {
-        return "plugin:" . $this::SLUG;
-    }
-
-    function network_option_name()
-    {
-        return "plugin:" . $this::SLUG . ":network";
+        if ($this->is_network_version()) {
+            return "plugin:" . $this::SLUG . ":network:" . $key;
+        } else {
+            return "plugin:" . $this::SLUG . ":" . $key;
+        }
     }
 
     function option_group()
@@ -234,32 +204,34 @@ class SettingsBase {
      *
      * @param $parent_section_key The parent section's key (i.e., the value
      #        that was passed as $key to ->add_settings_section())
-     * @param $key The field name. Recommended: make it start with 'field_'
+     * @param $key The field name (same as the argument to ->get())
      * @param $title The title
      * @param options Like the last argument to WordPress'
-     *        add_settings_field(), except 'value' need not be escaped and
-     *        'option_name' will be automatically provided
+     *        add_settings_field(), except 'value' need not be escaped
+     *        and $options['key'] will automatically be set to $key
+     *        (to be used in multi-purpose rendering methods)
      *
-     * The render callback is the method named "render_$key", if it exists,
-     * or "render_default_field_$options['type']"
+     * The render callback is the method named "render_field_$key", if
+     * it exists, or "render_default_field_$options['type']".
      */
     function add_settings_field ($parent_section_key, $key, $title, $options)
     {
+        $options['key'] = $key;
+
         if (array_key_exists('value', $options)) {
             $options['value'] = esc_attr($options['value']);
-        }
-        if (! array_key_exists('option_name', $options)) {
-            $options['option_name'] = $this->option_name();
+        } else {
+            $options['value'] = esc_attr($this->get($key));
         }
 
         if (array_key_exists('type', $options) &&
-            !method_exists($this, "render_$key")) {
+            !method_exists($this, "render_field_$key")) {
             $render_method = "render_default_field_" . $options["type"];
         } else {
-            $render_method = "render_$key";
+            $render_method = "render_field_$key";
         }
         add_settings_field(
-            $key,                                       // ID
+            $this->option_name($key),                   // ID
             $title,                                     // Title
             array($this, $render_method),               // print output
             $this::SLUG,                                // menu slug, see action_admin_menu()
@@ -271,13 +243,12 @@ class SettingsBase {
     /**
      * Like WordPress' register_setting, only simpler
      */
-    function register_setting()
+    function register_setting ($key, $args)
     {
         register_setting(
             $this->option_group(),
-            $this->option_name(),
-            array($this, 'validate_settings')           // validation callback - Need not exist
-        );
+            $this->option_name($key),
+            $args);
     }
 
     /**
