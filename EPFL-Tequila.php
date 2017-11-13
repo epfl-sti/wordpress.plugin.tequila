@@ -46,6 +46,8 @@ class Controller
         add_action('init', array($this, 'maybe_back_from_tequila'));
         add_action('init', array($this, 'setup_tequila_auth'));
         add_action('plugins_loaded', array($this, 'epfl_tequila_load_textdomain'));
+        wp_register_style('epfl-tequila', plugins_url('css/epfl-tequila.css',__FILE__ ));
+        wp_enqueue_style('epfl-tequila');
 
         $this->settings->hook();
     }
@@ -111,10 +113,12 @@ class Controller
 
     function render_tequila_login_button() {
         ?>
-        <p>
-        <label for="login_tequila">
-        <a href="?redirect-tequila=1" class="button button-primary button-large" style="background-color:darkred;"><?php echo ___("Se connecter avec Tequila...") ?></a>
-        </label>
+        <p class="tequila-button">
+            <label for="login_tequila">
+                <a href="?redirect-tequila=1" class="red-button btn">
+                    <?php echo ___("Se connecter avec Tequila...") ?>
+                </a>
+            </label>
         </p>
         <?php
     }
@@ -208,7 +212,6 @@ class Settings extends \EPFL\SettingsBase
 
     function render_section_about()
     {
-        echo __('<p><a href="https://github.com/epfl-sti/wordpress.plugin.tequila">EPFL-tequila</a>
         echo ___('<p><a href="https://github.com/epfl-sti/wordpress.plugin.tequila">EPFL-tequila</a>
     permet l’utilisation de <a href="https://tequila.epfl.ch/">Tequila</a>
     (Tequila est un système fédéré de gestion d’identité. Il fournit les moyens
@@ -218,7 +221,6 @@ class Settings extends \EPFL\SettingsBase
 
     function render_section_help()
     {
-        echo __('<p>En cas de problème avec EPFL-tequila veuillez créer une
         echo ___('<p>En cas de problème avec EPFL-tequila veuillez créer une
     <a href="https://github.com/epfl-sti/wordpress.plugin.tequila/issues/new"
     target="_blank">issue</a> sur le dépôt
