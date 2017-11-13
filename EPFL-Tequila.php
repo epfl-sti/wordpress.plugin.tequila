@@ -2,7 +2,7 @@
 /*
  * Plugin Name: EPFL Tequila
  * Description: Authenticate to WordPress with Tequila
- * Version:     0.1
+ * Version:     0.2
  * Author:      Dominique Quatravaux
  * Author URI:  mailto:dominique.quatravaux@epfl.ch
  */
@@ -71,6 +71,7 @@ class Controller
         $client->SetWantedAttributes(array( 'name',
                                             'firstname',
                                             'group',
+                                            'droit-adminwordpress',
                                             'displayname',
                                             'username',
                                             'personaltitle',
