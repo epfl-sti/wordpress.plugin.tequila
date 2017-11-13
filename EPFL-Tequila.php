@@ -118,7 +118,6 @@ class Controller
             return;
         }
 
-        error_log("Back from Tequila with ". $_SERVER['QUERY_STRING'] . " !!");
         $client = new \TequilaClient();
         $tequila_data = $client->fetchAttributes($_GET["key"]);
         $user = $this->fetch_user($tequila_data);
