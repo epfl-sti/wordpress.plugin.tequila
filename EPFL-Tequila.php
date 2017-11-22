@@ -176,10 +176,12 @@ class Controller
 class Settings extends \EPFL\SettingsBase
 {
     const SLUG = "epfl_tequila";
+    var $is_configurable = true;
 
     function hook()
     {
         parent::hook();
+        if (! $this->is_configurable) return;
         $this->add_options_page(
             ___('Réglages de Tequila'),                 // $page_title,
             ___('Tequila (auth)'),                      // $menu_title,
