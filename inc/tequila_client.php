@@ -11,7 +11,7 @@ define('LNG_FRENCH', 0);
 
 class TequilaClient
 {
-    public $sServerUrl = "https://tequila.epfl.ch/cgi-bin/tequila";
+    public $isTest = false;
     public $iLanguage = LNG_FRENCH;
     public $aLanguages = array(
          LNG_ENGLISH => 'english',
@@ -89,7 +89,7 @@ class TequilaClient
     {
         return sprintf(
             '%s/requestauth?requestkey=%s',
-            $this->sServerUrl,
+            $this->serverUrl(),
             $request_key
           );
     }
@@ -138,7 +138,7 @@ class TequilaClient
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
 
-        $url = $this->sServerUrl;
+        $url = $this->serverUrl();
         switch ($type) {
         case 'createrequest':
             $url .= '/createrequest';
@@ -175,7 +175,7 @@ class TequilaClient
         // If connexion failed (HTTP code 200 <=> OK)
         $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         if ($code != '200') {
-            die("Error communicating with Tequila, status is $code");
+            die("Error communicating with Tequila, status is $code\n\n$response\n");
         }
         curl_close($ch);
         return $response;
@@ -237,5 +237,15 @@ class TequilaClient
                 );
             }
         }
+    }
+
+    public function serverUrl() 
+    {
+        if ($this->isTest) {
+            $server = "test-tequila";
+        } else {
+            $server = "tequila";
+        }
+        return "https://$server.epfl.ch/cgi-bin/tequila";
     }
 }
