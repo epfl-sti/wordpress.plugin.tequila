@@ -11,7 +11,7 @@ define('LNG_FRENCH', 0);
 
 class TequilaClient
 {
-    public $isTest = true;   // XXX Unless and until we have the "droit-WordPress.*" in the real thing
+    public $isTest = false;
     public $iLanguage = LNG_FRENCH;
     public $aLanguages = array(
          LNG_ENGLISH => 'english',

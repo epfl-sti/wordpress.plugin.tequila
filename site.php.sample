@@ -1,0 +1,13 @@
+<?php
+
+/* Copy and modify this file to site.php to tweak this plugin for your site. */
+
+namespace EPFL\Tequila;
+
+if (! defined('ABSPATH')) {
+    die('Access denied.');
+}
+
+// Uncomment to do what it says on the tin.
+// Controller::getInstance()->use_test_tequila = true;
+

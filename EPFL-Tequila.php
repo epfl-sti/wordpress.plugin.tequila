@@ -16,6 +16,9 @@ if (! defined('ABSPATH')) {
 require_once(dirname(__FILE__) . "/inc/tequila_client.php");
 require_once(dirname(__FILE__) . "/inc/settings.php");
 
+if (file_exists(dirname(__FILE__) . "/site.php")) {
+    require_once(dirname(__FILE__) . "/site.php");
+}
 
 function ___($text)
 {
@@ -26,6 +29,7 @@ class Controller
 {
     static $instance = false;
     var $settings = null;
+    var $use_test_tequila = false;
 
     public static function getInstance()
     {
@@ -66,7 +70,7 @@ class Controller
 
     function do_redirect_tequila()
     {
-        $client = new \TequilaClient();
+        $client = $this->get_tequila_client();
         $client->SetApplicationName(sprintf(___('Administration WordPress — %1$s'), get_bloginfo('name')));
         $client->SetWantedAttributes(array( 'name',
                                             'firstname',
@@ -119,7 +123,7 @@ class Controller
             return;
         }
 
-        $client = new \TequilaClient();
+        $client = $this->get_tequila_client();
         $tequila_data = $client->fetchAttributes($_GET["key"]);
         $user = $this->fetch_user($tequila_data);
         if ($user) {
@@ -157,6 +161,15 @@ class Controller
             $user = null;
         }
         return $user;
+    }
+
+    private function get_tequila_client ()
+    {
+        $client = new \TequilaClient();
+        if ($this->use_test_tequila) {
+            $client->isTest = true;
+        }
+        return $client;
     }
 }
 
