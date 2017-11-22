@@ -80,7 +80,7 @@ class SettingsBase {
      * Regurgitates every knob previously registered by add_settings_section(),
      * add_settings_field() etc.
      */
-    function render()
+    function render ()
     {
         $title = $GLOBALS['title'];
         echo("<div class=\"wrap\">
@@ -90,18 +90,19 @@ class SettingsBase {
         do_settings_sections( $this::SLUG );
         submit_button();
         echo "        </form>\n";
+        echo("</div>");
     }
 
     function render_default_field_text ($args)
     {
         printf(
-            '<input type="text" name="%1$s" id="%2$s" value="%3$s" class="regular-text">',
+            '<input type="text" name="%1$s" id="%2$s" value="%3$s" class="regular-text" />',
             $this->option_name($args['key']),
             $args['key'],
             $args['value']
         );
         if ($args['help']) {
-            echo '<br />&nbsp;<i>' . $args['help'] . '</i>';
+            echo '<br /><i>' . $args['help'] . '</i>';
         }
     }
 
@@ -123,7 +124,7 @@ class SettingsBase {
         }
         print '</select>';
         if ($args['help']) {
-            echo '<br />&nbsp;<i>' . $args['help'] . '</i>';
+            echo '<br /><i>' . $args['help'] . '</i>';
         }
     }
 
@@ -131,7 +132,7 @@ class SettingsBase {
     {
         foreach ($args['options'] as $val => $title) {
             printf(
-                '<input type="radio" type="radio" name="%1$s" value="%2$s" %3$s/>%4$s</p>',
+                '<p><input type="radio" type="radio" id="%1$s" name="%1$s" value="%2$s" %3$s/>%4$s</p>',
                 $this->option_name($args['key']),
                 $val,
                 checked($val, $args['value'], false),
@@ -140,7 +141,7 @@ class SettingsBase {
         }
         print '</select>';
         if ($args['help']) {
-            echo '<br />&nbsp;<i>' . $args['help'] . '</i>';
+            echo '<br /><i>' . $args['help'] . '</i>';
         }
     }
 
