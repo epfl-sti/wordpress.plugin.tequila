@@ -22,19 +22,18 @@ if (! defined('ABSPATH')) {
  *     const SLUG
  *
  *     function hook()
- *        -> but should not forget to call parent::hook()
+ *        -> and should not forget to call parent::hook()
  *
- * Subclasses may define:
- *
- *     function validate_settings ( $settings )
- *        -> should return a sanitized copy of $settings
- *        -> might call $this->add_settings_error()
- *
- * @see https://wordpress.stackexchange.com/questions/100023/settings-api-with-arrays-example
+ * @see
+ * https://wordpress.stackexchange.com/questions/100023/settings-api-with-arrays-example
+ * except that we use one wp_options row per setting, allowing for
+ * straightforward integration with the "wp option update" CLI
+ * functionality
  */
 
 if (! class_exists('EPFL\SettingsBase')):
-class SettingsBase {
+class SettingsBase
+{
     public function hook()
     { 
     }
@@ -243,9 +242,17 @@ class SettingsBase {
 
     /**
      * Like WordPress' register_setting, only simpler
+     *
+     * If a method called "sanitize_$key" exists, it is automagically
+     * used as $args["sanitize_callback"] (unless that key is set
+     * explicitly).
      */
     function register_setting ($key, $args)
     {
+        if ( (! array_key_exists("sanitize_callback", $args)) and
+             method_exists($this, "sanitize_$key") ) {
+            $args["sanitize_callback"] = array($this, "sanitize_$key");
+        }
         register_setting(
             $this->option_group(),
             $this->option_name($key),
