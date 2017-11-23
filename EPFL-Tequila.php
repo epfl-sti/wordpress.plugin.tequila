@@ -30,6 +30,15 @@ class Controller
     static $instance = false;
     var $settings = null;
     var $use_test_tequila = false;
+    var $is_debug_enabled = false;
+
+    function debug ($msg)
+    {
+        if ($this->is_debug_enabled) {
+            error_log($msg);
+        }
+    }
+
 
     public static function getInstance()
     {
@@ -125,6 +134,7 @@ class Controller
 
         $client = $this->get_tequila_client();
         $tequila_data = $client->fetchAttributes($_GET["key"]);
+        $this->debug(var_export($tequila_data, true));
         $user = $this->fetch_user($tequila_data);
         if ($user) {
             wp_set_auth_cookie($user->ID, true);

@@ -8,6 +8,8 @@ if (! defined('ABSPATH')) {
     die('Access denied.');
 }
 
+// Controller::getInstance()->is_debug_enabled = true;
+
 // Uncomment to do what it says on the tin.
 // Controller::getInstance()->use_test_tequila = true;
 
