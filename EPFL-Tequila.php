@@ -16,10 +16,6 @@ if (! defined('ABSPATH')) {
 require_once(dirname(__FILE__) . "/inc/tequila_client.php");
 require_once(dirname(__FILE__) . "/inc/settings.php");
 
-if (file_exists(dirname(__FILE__) . "/site.php")) {
-    require_once(dirname(__FILE__) . "/site.php");
-}
-
 function ___($text)
 {
     return __($text, "epfl-tequila");
@@ -247,6 +243,10 @@ class Settings extends \EPFL\SettingsBase
     {
         // Nothing — The fields in this section speak for themselves
     }
+}
+
+if (file_exists(dirname(__FILE__) . "/site.php")) {
+    require_once(dirname(__FILE__) . "/site.php");
 }
 
 Controller::getInstance()->hook();
