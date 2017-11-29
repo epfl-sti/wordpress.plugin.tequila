@@ -16,4 +16,5 @@ if (! defined('ABSPATH')) {
 /* Uncomment this to lock down the admin page for this plugin completely. */
 // Configuration is still feasible using the CLI.
 
+/* Uncomment to enable "VPSI lockdown mode" */
 // Controller::getInstance()->settings->is_configurable = false;
