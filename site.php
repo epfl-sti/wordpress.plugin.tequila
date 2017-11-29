@@ -18,3 +18,7 @@ if (! defined('ABSPATH')) {
 
 /* Uncomment to enable "VPSI lockdown mode" */
 // Controller::getInstance()->settings->is_configurable = false;
+
+/* Uncomment if you are serving from a cluster, and the two subsequent
+ * Tequila transactions might not come from the same IP address. */
+// Controller::getInstance()->nochecksrchost = true;
