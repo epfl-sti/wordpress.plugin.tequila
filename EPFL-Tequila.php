@@ -27,6 +27,7 @@ class Controller
     var $settings = null;
     var $use_test_tequila = false;
     var $is_debug_enabled = false;
+    var $allowedrequesthosts = null;
 
     function debug ($msg)
     {
@@ -127,10 +128,13 @@ class Controller
         if (!array_key_exists('back-from-Tequila', $_REQUEST)) {
             return;
         }
-
-        $client = $this->get_tequila_client();
-        $tequila_data = $client->fetchAttributes($_GET["key"]);
-        $this->debug(var_export($tequila_data, true));
+	
+	$params = array("key" => $_GET["key"]);
+	//params["allowedrequesthosts"]=$this->nochecksrchost;
+	$params["allowedrequesthosts"]='10.180.21.0/24';
+	$tequila_data = $this->get_tequila_client()->fetchAttributes($params);
+	
+	$this->debug(var_export($tequila_data, true));
         $user = $this->fetch_user($tequila_data);
         if ($user) {
             wp_set_auth_cookie($user->ID, true);
