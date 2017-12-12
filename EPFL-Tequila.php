@@ -130,12 +130,14 @@ class Controller
         }
 	
 	$params = array("key" => $_GET["key"]);
-	//params["allowedrequesthosts"]=$this->nochecksrchost;
-	$params["allowedrequesthosts"]='10.180.21.0/24';
+	if (!($this->allowedrequesthosts == NULL)) {
+	    $params["allowedrequesthosts"]=$this->allowedrequesthosts;
+  	} 
 	$tequila_data = $this->get_tequila_client()->fetchAttributes($params);
-	
+
 	$this->debug(var_export($tequila_data, true));
-        $user = $this->fetch_user($tequila_data);
+	$user = $this->fetch_user($tequila_data);
+
         if ($user) {
             wp_set_auth_cookie($user->ID, true);
             wp_redirect(admin_url());
@@ -165,9 +167,10 @@ class Controller
          *
          * @param array $tequila_data The data received from Tequila
          */
-        do_action("tequila_save_user", $tequila_data);
+	    
+	do_action("tequila_save_user", $tequila_data);
         $user = get_user_by("login", $tequila_data["username"]);
-        if (gettype($user) === "boolean" && $user === false) {
+	if (gettype($user) === "boolean" && $user === false) {
             $user = null;
         }
         return $user;
