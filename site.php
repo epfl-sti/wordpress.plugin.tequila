@@ -20,4 +20,4 @@ if (! defined('ABSPATH')) {
 
 /* Uncomment if you are serving from a cluster, and the two subsequent
  * Tequila transactions might not come from the same IP address. */
-Controller::getInstance()->allowedrequesthosts = '128.178.224.0/24';
+Controller::getInstance()->allowedrequesthosts = get_option('plugin:epfl:tequila_allowed_request_hosts', null);
