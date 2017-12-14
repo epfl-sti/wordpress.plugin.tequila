@@ -130,7 +130,7 @@ class Controller
         }
 	
 	$params = array("key" => $_GET["key"]);
-	if (!($this->allowedrequesthosts == NULL)) {
+	if ($this->allowedrequesthosts !== NULL) {
 	    $params["allowedrequesthosts"]=$this->allowedrequesthosts;
   	} 
 	$tequila_data = $this->get_tequila_client()->fetchAttributes($params);
