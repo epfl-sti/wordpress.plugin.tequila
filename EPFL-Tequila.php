@@ -134,7 +134,7 @@ class Controller
         $user = $this->fetch_user($tequila_data);
         if ($user) {
             wp_set_auth_cookie($user->ID, true);
-            wp_redirect(admin_url());
+            wp_redirect(parse_url(admin_url(), PHP_URL_PATH));
             exit;
         } else {
             http_response_code(404);
