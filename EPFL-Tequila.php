@@ -58,10 +58,12 @@ class Controller
 
     function setup_tequila_auth()
     {
-        if ("1" == $this->settings->get("has_dual_auth")) {
+        if ($this->settings->get("has_dual_auth")) {
+            $this->debug("setup_tequila_auth with dual auth");
             add_action('login_form', array($this, 'render_tequila_login_button'));
             add_action('login_init', array( $this, 'redirect_tequila_if_button_clicked' ));
         } else {
+            $this->debug("setup_tequila_auth with redirect");
             add_action('wp_authenticate', array( $this, 'do_redirect_tequila'));
             add_action('wp_logout', array( $this, 'logout_to_home_page' ));
         }
@@ -188,6 +190,12 @@ class Settings extends \EPFL\SettingsBase
     {
         parent::hook();
         if (! $this->is_configurable) return;
+
+        $this->register_setting('has_dual_auth', array(
+            'type'    => 'boolean',
+            'default' => true
+        ));
+
         $this->add_options_page(
             ___('Réglages de Tequila'),                 // $page_title,
             ___('Tequila (auth)'),                      // $menu_title,
@@ -204,10 +212,6 @@ class Settings extends \EPFL\SettingsBase
         $this->add_settings_section('section_help', ___('Aide'));
         $this->add_settings_section('section_settings', ___('Réglages'));
 
-        $this->register_setting('has_dual_auth', array(
-            'type'    => 'boolean',
-            'default' => true
-        ));
         $this->add_settings_field(
             'section_settings', 'has_dual_auth', ___('Authentification traditionnelle Wordpress'),
             array(
