@@ -102,15 +102,15 @@ class TequilaClient
     */
     public function fetchAttributes($fields)
     {
-	if (! is_array($fields)) {
-	   $fields = array('key' => $fields);
-	}
-	$response = $this->askTequila('fetchattributes', $fields);
+        if (! is_array($fields)) {
+            $fields = array('key' => $fields);
+        }
+        $response = $this->askTequila('fetchattributes', $fields);
         if (!$response) {
             die("Unknown Tequila key: $sessionkey");
         }
 
-	$result = array();
+        $result = array();
         $attributes = explode("\n", $response);
 
         /* Saving returned attributes */
@@ -170,16 +170,16 @@ class TequilaClient
             foreach ($fields as $key => $val) {
                 $pFields[] = sprintf('%s=%s', $key, $val);
             }
-	    $query = implode("\n", $pFields) . "\n";
+            $query = implode("\n", $pFields) . "\n";
             curl_setopt($ch, CURLOPT_POSTFIELDS, $query);
-	}
-	$response = curl_exec($ch);
+        }
+        $response = curl_exec($ch);
         // If connexion failed (HTTP code 200 <=> OK)
         $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         if ($code != '200') {
             die("Error communicating with Tequila, status is $code\n\n$response\n");
         }
-	curl_close($ch);
+        curl_close($ch);
         return $response;
     }
 

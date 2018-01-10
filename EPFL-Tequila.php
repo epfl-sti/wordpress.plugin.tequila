@@ -128,15 +128,15 @@ class Controller
         if (!array_key_exists('back-from-Tequila', $_REQUEST)) {
             return;
         }
-	
-	$params = array("key" => $_GET["key"]);
-	if ($this->allowedrequesthosts !== NULL) {
-	    $params["allowedrequesthosts"]=$this->allowedrequesthosts;
-  	} 
-	$tequila_data = $this->get_tequila_client()->fetchAttributes($params);
 
-	$this->debug(var_export($tequila_data, true));
-	$user = $this->fetch_user($tequila_data);
+        $params = array("key" => $_GET["key"]);
+        if ($this->allowedrequesthosts !== NULL) {
+            $params["allowedrequesthosts"]=$this->allowedrequesthosts;
+        }
+        $tequila_data = $this->get_tequila_client()->fetchAttributes($params);
+
+        $this->debug(var_export($tequila_data, true));
+        $user = $this->fetch_user($tequila_data);
 
         if ($user) {
             wp_set_auth_cookie($user->ID, true);
@@ -167,10 +167,9 @@ class Controller
          *
          * @param array $tequila_data The data received from Tequila
          */
-	    
-	do_action("tequila_save_user", $tequila_data);
+        do_action("tequila_save_user", $tequila_data);
         $user = get_user_by("login", $tequila_data["username"]);
-	if (gettype($user) === "boolean" && $user === false) {
+        if (gettype($user) === "boolean" && $user === false) {
             $user = null;
         }
         return $user;
