@@ -100,9 +100,11 @@ class TequilaClient
 
         @return mixed
     */
-    public function fetchAttributes($sessionkey)
+    public function fetchAttributes($fields)
     {
-        $fields = array('key' => $sessionkey);
+        if (! is_array($fields)) {
+            $fields = array('key' => $fields);
+        }
         $response = $this->askTequila('fetchattributes', $fields);
         if (!$response) {
             die("Unknown Tequila key: $sessionkey");
