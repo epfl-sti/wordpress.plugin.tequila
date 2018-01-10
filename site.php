@@ -17,7 +17,3 @@ if (! defined('ABSPATH')) {
 // Configuration is still feasible using the CLI.
 
 // Controller::getInstance()->settings->is_configurable = false;
-
-/* Uncomment if you are serving from a cluster, and the two subsequent
- * Tequila transactions might not come from the same IP address. */
-Controller::getInstance()->allowedrequesthosts = get_option('plugin:epfl:tequila_allowed_request_hosts', null);

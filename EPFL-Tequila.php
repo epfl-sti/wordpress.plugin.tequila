@@ -48,6 +48,9 @@ class Controller
     public function __construct ()
     {
         $this->settings = new Settings();
+
+        // This is not (yet) tweakable via UI.
+        $this->allowedrequesthosts = get_option('plugin:epfl:tequila_allowed_request_hosts', null);
     }
 
     public function hook()
