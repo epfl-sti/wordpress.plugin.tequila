@@ -30,7 +30,7 @@ class TequilaClient
     }
 
     /*
-	    mplode(GOAy : Sends an authentication request to Tequila
+        GOAL : Sends an authentication request to Tequila
     */
     public function createRequest($urlaccess = '')
     {
