@@ -2,7 +2,7 @@
 /*
  * Plugin Name: EPFL Tequila
  * Description: Authenticate to WordPress with Tequila
- * Version:     0.10
+ * Version:     0.11
  * Author:      Dominique Quatravaux
  * Author URI:  mailto:dominique.quatravaux@epfl.ch
  */
