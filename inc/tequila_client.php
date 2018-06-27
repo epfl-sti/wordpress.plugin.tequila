@@ -134,16 +134,18 @@ class TequilaClient
         //Use the CURL object in order to communicate with tequila.epfl.ch
         $ch = curl_init();
 
-        curl_setopt($ch, CURLOPT_HEADER, false);
-        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HEADER, true);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
 
         $url = $this->serverUrl();
+        $is_post = false;   // Unless stipulated otherwise below
         switch ($type) {
         case 'createrequest':
             $url .= '/createrequest';
+            curl_setopt($ch, CURLOPT_POST, true);
+            $is_post = true;
             break;
 
         case 'fetchattributes':
@@ -170,17 +172,25 @@ class TequilaClient
             foreach ($fields as $key => $val) {
                 $pFields[] = sprintf('%s=%s', $key, $val);
             }
-            $query = implode("\n", $pFields) . "\n";
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $query);
+            if ($is_post) {
+                $query = implode("\n", $pFields) . "\n";
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $query);
+            } else {
+                curl_setopt($ch, CURLOPT_URL, $url . '?' . implode('&', $pFields));
+            }
         }
         $response = curl_exec($ch);
+        file_put_contents('/tmp/tequila_response', $response);
         // If connexion failed (HTTP code 200 <=> OK)
         $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         if ($code != '200') {
-            die("Error communicating with Tequila, status is $code\n\n$response\n");
+            die("Error communicating with Tequila ($url), " . 
+                "status is $code\n\n$query\n\nResponse follows:\n$response\n");
         }
         curl_close($ch);
-        return $response;
+        $response_body = preg_replace('/^.*?\n\r?\n/s', '', $response, 1);
+        file_put_contents('/tmp/tequila_response', $response_body);
+        return $response_body;
     }
 
     /* Caller of Authenticate() may call these accessors to improvify
