@@ -2,7 +2,7 @@
 /*
  * Plugin Name: EPFL Tequila
  * Description: Authenticate to WordPress with Tequila
- * Version:     0.11
+ * Version:     0.12
  * Author:      Dominique Quatravaux
  * Author URI:  mailto:dominique.quatravaux@epfl.ch
  */
@@ -94,7 +94,11 @@ class Controller
                                             'email',
                                             'title', 'title-en',
                                             'uniqueid'));
-        $client->Authenticate(admin_url("?back-from-Tequila=1"));
+
+        /* Getting current URL to be redirected on it after we come back from Tequila*/
+        $redirect_to = (empty($_GET['redirect_to']))? home_url(): $_GET['redirect_to'];
+
+        $client->Authenticate(admin_url("?back-from-Tequila=1&redirect_to=".urlencode($redirect_to)));
     }
 
     /**
@@ -145,7 +149,9 @@ class Controller
 
         if ($user) {
             wp_set_auth_cookie($user->ID, true);
-            wp_redirect(parse_url(admin_url(), PHP_URL_PATH));
+            /* Recovering redirect URL */
+            $redirect_to = (empty($_GET['redirect_to']))? home_url(): $_GET['redirect_to'];
+            wp_redirect($redirect_to);
             exit;
         } else {
             http_response_code(404);
