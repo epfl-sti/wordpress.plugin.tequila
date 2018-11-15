@@ -101,7 +101,7 @@ class Controller
         /* Getting current URL to be redirected on it after we come back from Tequila*/
         $redirect_to = (empty($_GET['redirect_to']))? home_url(): $_GET['redirect_to'];
 
-        $this->debug("Redirect on tequila auth. Redirect to = ".$redirect_to);
+        $this->debug("Redirect to Tequila auth. Origin URL = ".$redirect_to);
 
         $client->Authenticate(admin_url("?back-from-Tequila=1&redirect_to=".urlencode($redirect_to)));
     }
