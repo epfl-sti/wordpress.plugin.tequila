@@ -2,7 +2,7 @@
 /*
  * Plugin Name: EPFL Tequila
  * Description: Authenticate to WordPress with Tequila
- * Version:     0.12
+ * Version:     0.13 (vpsi)
  * Author:      Dominique Quatravaux
  * Author URI:  mailto:dominique.quatravaux@epfl.ch
  */
@@ -32,7 +32,7 @@ class Controller
     function debug ($msg)
     {
         if ($this->is_debug_enabled) {
-            error_log($msg);
+            error_log("Tequila: ".$msg);
         }
     }
 
@@ -62,6 +62,7 @@ class Controller
 
     function setup_tequila_auth()
     {
+        $this->debug("-> setup_tequila_auth");
         if ($this->settings->get("has_dual_auth")) {
             $this->debug("setup_tequila_auth with dual auth");
             add_action('login_form', array($this, 'render_tequila_login_button'));
@@ -81,6 +82,8 @@ class Controller
 
     function do_redirect_tequila()
     {
+
+        $this->debug("-> do_redirect_tequila");
         $client = $this->get_tequila_client();
         $client->SetApplicationName(sprintf(___('Administration WordPress &mdash; %1$s'), get_bloginfo('name')));
         $client->SetWantedAttributes(array( 'name',
@@ -97,6 +100,8 @@ class Controller
 
         /* Getting current URL to be redirected on it after we come back from Tequila*/
         $redirect_to = (empty($_GET['redirect_to']))? home_url(): $_GET['redirect_to'];
+
+        $this->debug("Redirect to Tequila auth. Origin URL = ".$redirect_to);
 
         $client->Authenticate(admin_url("?back-from-Tequila=1&redirect_to=".urlencode($redirect_to)));
     }
@@ -134,7 +139,9 @@ class Controller
 
     function maybe_back_from_tequila()
     {
+        $this->debug("-> maybe_back_from_tequila");
         if (!array_key_exists('back-from-Tequila', $_REQUEST)) {
+            $this->debug("Not back from tequila in fact");
             return;
         }
 
@@ -144,13 +151,16 @@ class Controller
         }
         $tequila_data = $this->get_tequila_client()->fetchAttributes($params);
 
-        $this->debug(var_export($tequila_data, true));
+        $this->debug("Tequila data:\n". var_export($tequila_data, true));
         $user = $this->fetch_user($tequila_data);
 
         if ($user) {
             wp_set_auth_cookie($user->ID, true);
             /* Recovering redirect URL */
             $redirect_to = (empty($_GET['redirect_to']))? home_url(): $_GET['redirect_to'];
+
+            $this->debug("Redirect to: ". $redirect_to);
+
             wp_redirect($redirect_to);
             exit;
         } else {
@@ -164,6 +174,7 @@ class Controller
 
     function fetch_user($tequila_data)
     {
+        $this->debug("-> fetch_user");
         /**
          * Create or update this Tequila user in the WordPress database.
          *
