@@ -136,8 +136,6 @@ class TequilaClient
 
         curl_setopt($ch, CURLOPT_HEADER, true);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, true);
 
         $url = $this->serverUrl();
         $is_post = false;   // Unless stipulated otherwise below
