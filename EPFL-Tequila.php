@@ -2,7 +2,7 @@
 /*
  * Plugin Name: EPFL Tequila
  * Description: Authenticate to WordPress with Tequila
- * Version:     0.15 (vpsi)
+ * Version:     0.16 (vpsi)
  * Author:      Dominique Quatravaux
  * Author URI:  mailto:dominique.quatravaux@epfl.ch
  */
@@ -190,7 +190,30 @@ class Controller
          * @param array $tequila_data The data received from Tequila
          */
         do_action("tequila_save_user", $tequila_data);
-        $user = get_user_by("login", $tequila_data["username"]);
+        $user = get_user_by("login", $tequila_data["uniqueid"]);
+
+        /* ----------------------------------------------------------------------
+            NOTE: maybe, on day, in a far future, this block of code can be removed because it is only here to
+                  ensure backward compatibility with existing user accounts having incorrect name. Once everything
+                  will be renamed to sciper, this code can be removed
+        */
+
+        /* If user is not found using SCIPER as login, */
+        if($user === false)
+        {
+            /* We look for user using its SCIPER in 'nickname' meta field (because was stored here at the beginning) */
+            $users = get_users(array('meta_key' => 'nickname',
+                                     'meta_value' => $tequila_data['uniqueid']));
+
+            /* We extract user info if we have a match */
+            $user = (sizeof($users)==1)?$users[0]:false;
+        }
+
+        /* End of code to remove in the future.
+        --------------------------------------------- */
+
+
+
         if (gettype($user) === "boolean" && $user === false) {
             $user = null;
         }
