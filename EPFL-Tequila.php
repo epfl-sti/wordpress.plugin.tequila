@@ -190,7 +190,7 @@ class Controller
          * @param array $tequila_data The data received from Tequila
          */
         do_action("tequila_save_user", $tequila_data);
-        $user = get_user_by("login", $tequila_data["username"]);
+        $user = get_user_by("slug", $tequila_data["uniqueid"]);
         if (gettype($user) === "boolean" && $user === false) {
             $user = null;
         }
