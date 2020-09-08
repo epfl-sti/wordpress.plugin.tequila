@@ -56,19 +56,19 @@ class TequilaClient
             $requestInfos ['service'] = $this->sApplicationName;
         }
         if (!empty($this->aWantedRights)) {
-            $requestInfos ['wantright'] = implode($this->aWantedRights, '+');
+            $requestInfos ['wantright'] = implode('+', $this->aWantedRights);
         }
         if (!empty($this->aWantedRoles)) {
-            $requestInfos ['wantrole'] =  implode($this->aWantedRoles, '+');
+            $requestInfos ['wantrole'] =  implode('+', $this->aWantedRoles);
         }
         if (!empty($this->aWantedAttributes)) {
-            $requestInfos ['request'] = implode($this->aWantedAttributes, '+');
+            $requestInfos ['request'] = implode('+', $this->aWantedAttributes);
         }
         if (!empty($this->aWishedAttributes)) {
-            $requestInfos ['wish'] = implode($this->aWishedAttributes, '+');
+            $requestInfos ['wish'] = implode('+', $this->aWishedAttributes);
         }
         if (!empty($this->aWantedGroups)) {
-            $requestInfos ['belongs'] = implode($this->aWantedGroups, '+');
+            $requestInfos ['belongs'] = implode('+', $this->aWantedGroups);
         }
         if (!empty($this->sCustomFilter)) {
             $requestInfos ['require'] = $this->sCustomFilter;
